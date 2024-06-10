@@ -141,13 +141,6 @@ class Jwt(Schema):
 jwt = Instances(Jwt)
 
 
-class JwtInvalidSchema(Schema):
-    msg = fields.String(required=False)
-
-
-jwt_invalid = Instances(JwtInvalidSchema)
-
-
 class ChallengeRequestSchema(Schema):
     hash = fields.String(required=True)
     image = fields.String(required=True)

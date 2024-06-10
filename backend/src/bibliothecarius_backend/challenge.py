@@ -16,7 +16,7 @@ class Challenge(MethodView):
     @jwt_required(fresh=True)
     @blp.doc(security=[{"Bearer Auth": []}])
     @blp.response(204)
-    @blp.alt_response(422, schema=schemas.jwt_invalid.one)
+    @blp.alt_response(422)
     @blp.alt_response(401)
     def get(self):
         pass
@@ -25,7 +25,7 @@ class Challenge(MethodView):
     @blp.doc(security=[{}, {"Bearer Auth": []}])
     @blp.arguments(schemas.challenge_response_message.one)
     @blp.response(200, schemas.challenge_request_message.one)
-    @blp.alt_response(422, schema=schemas.jwt_invalid.one)
+    @blp.alt_response(422)
     @blp.alt_response(400)
     @blp.alt_response(401)
     def post(self, data):

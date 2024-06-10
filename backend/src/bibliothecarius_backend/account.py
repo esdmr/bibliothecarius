@@ -17,7 +17,7 @@ class Account(MethodView):
     @jwt_required()
     @blp.doc(security=[{"Bearer Auth": []}])
     @blp.response(200, schemas.librarian.one)
-    @blp.alt_response(422, schema=schemas.jwt_invalid.one)
+    @blp.alt_response(422)
     @blp.alt_response(401)
     def get(self):
         identity = schemas.identity.one.load(get_current_user() or {})
@@ -36,7 +36,7 @@ class Account(MethodView):
     @blp.doc(security=[{}, {"Bearer Auth": []}])
     @blp.arguments(schemas.login.one)
     @blp.response(200, schemas.jwt.one)
-    @blp.alt_response(422, schema=schemas.jwt_invalid.one)
+    @blp.alt_response(422)
     @blp.alt_response(400)
     @blp.alt_response(404)
     @blp.alt_response(401)
