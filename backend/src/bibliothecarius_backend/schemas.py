@@ -12,16 +12,18 @@ def id_field() -> fields.Integer:
 
 
 class Instances[S: Schema, M: Model]:
-    def __init__(self, name: str, Target: Type[S], model: Type[M] = Model):
+    def __init__(self, Target: Type[S], model: Type[M] = Model):
+        name = Target.__name__.removesuffix("Schema")
+
         class Raw(Target):
             pass
 
-        Raw.__name__ = Target.__name__.removesuffix("Schema") + "RawSchema"
+        Raw.__name__ = name + "RawSchema"
 
         class Partial(Target):
             pass
 
-        Partial.__name__ = Target.__name__.removesuffix("Schema") + "PartialSchema"
+        Partial.__name__ = name + "PartialSchema"
 
         self.name = name
         self.Target = Target
@@ -46,7 +48,7 @@ class CategorySchema(Schema):
     name = fields.String(required=True)
 
 
-category = Instances("category", CategorySchema, models.Category)
+category = Instances(CategorySchema, models.Category)
 category.model
 
 
@@ -58,7 +60,7 @@ class BookSchema(Schema):
     category_id = fields.Integer(required=False)
 
 
-book = Instances("book", BookSchema, models.Book)
+book = Instances(BookSchema, models.Book)
 
 
 class AuthorSchema(Schema):
@@ -66,7 +68,7 @@ class AuthorSchema(Schema):
     name = fields.String(required=True)
 
 
-author = Instances("author", AuthorSchema, models.Author)
+author = Instances(AuthorSchema, models.Author)
 
 
 class BookAuthorSchema(Schema):
@@ -77,7 +79,7 @@ class BookAuthorSchema(Schema):
     author_id = fields.Integer(required=True)
 
 
-book_author = Instances("book_author", BookAuthorSchema, models.BookAuthor)
+book_author = Instances(BookAuthorSchema, models.BookAuthor)
 
 
 class PublisherSchema(Schema):
@@ -85,7 +87,7 @@ class PublisherSchema(Schema):
     name = fields.String(required=True)
 
 
-publisher = Instances("publisher", PublisherSchema, models.Publisher)
+publisher = Instances(PublisherSchema, models.Publisher)
 
 
 class BookCopySchema(Schema):
@@ -97,7 +99,7 @@ class BookCopySchema(Schema):
     publisher_id = fields.Integer(required=True)
 
 
-book_copy = Instances("book_copy", BookCopySchema, models.BookCopy)
+book_copy = Instances(BookCopySchema, models.BookCopy)
 
 
 class LibrarianSchema(Schema):
@@ -106,7 +108,7 @@ class LibrarianSchema(Schema):
     admin = fields.Boolean(required=False, default=False)
 
 
-librarian = Instances("librarian", LibrarianSchema, models.Librarian)
+librarian = Instances(LibrarianSchema, models.Librarian)
 
 
 class AccountSchema(Schema):
@@ -114,14 +116,14 @@ class AccountSchema(Schema):
     admin = fields.Boolean(required=False, default=False)
 
 
-account = Instances("account", AccountSchema)
+account = Instances(AccountSchema)
 
 
 class Identity(Schema):
-    account = fields.Nested(AccountSchema, required=False, default=None)
+    account = fields.Nested(AccountSchema, required=False)
 
 
-identity = Instances("identity", Identity)
+identity = Instances(Identity)
 
 
 class LogInSchema(Schema):
@@ -129,21 +131,52 @@ class LogInSchema(Schema):
     password = fields.String(required=True, load_only=True)
 
 
-login = Instances("login", LogInSchema, models.Librarian)
+login = Instances(LogInSchema, models.Librarian)
 
 
 class Jwt(Schema):
     token = fields.String(required=True)
 
 
-jwt = Instances("jwt", Jwt)
+jwt = Instances(Jwt)
 
 
-class UnauthorizedSchema(Schema):
+class JwtInvalidSchema(Schema):
     msg = fields.String(required=False)
 
 
-unauthorized = Instances("unauthorized", UnauthorizedSchema)
+jwt_invalid = Instances(JwtInvalidSchema)
+
+
+class ChallengeRequestSchema(Schema):
+    hash = fields.String(required=True)
+    image = fields.String(required=True)
+
+
+challenge_request = Instances(ChallengeRequestSchema)
+
+
+class ChallengeResponseSchema(Schema):
+    hash = fields.String(required=True)
+    text = fields.String(required=True)
+
+
+challenge_response = Instances(ChallengeResponseSchema)
+
+
+class ChallengeRequestMessageSchema(Schema):
+    request = fields.Nested(ChallengeRequestSchema, required=False)
+    token = fields.String(required=False)
+
+
+challenge_request_message = Instances(ChallengeRequestMessageSchema)
+
+
+class ChallengeResponseMessageSchema(Schema):
+    response = fields.Nested(ChallengeResponseSchema, required=False)
+
+
+challenge_response_message = Instances(ChallengeResponseMessageSchema)
 
 
 @app.jwt.user_identity_loader
@@ -153,6 +186,4 @@ def user_identity_lookup(user: Any) -> Any:
 
 @app.jwt.user_lookup_loader
 def user_lookup_loader(_jwt_header: dict[str, Any], jwt_data: dict[str, Any]):
-    print("jwt", _jwt_header, jwt_data)
-
     return identity.one.load(jwt_data["sub"])

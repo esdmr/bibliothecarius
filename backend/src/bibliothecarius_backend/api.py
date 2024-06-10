@@ -21,7 +21,8 @@ def create_blueprint[
         @blp.doc(security=[{"Bearer Auth": []}])
         @blp.arguments(schema.partial, location="query")
         @blp.response(200, schema.many)
-        @blp.alt_response(401, schema=schemas.unauthorized.one)
+        @blp.alt_response(401, schema=schemas.jwt_invalid.one)
+        @blp.alt_response(422, schema=schemas.jwt_invalid.one)
         def get(self, query):
             query = schema.partial.load(query)
 
@@ -36,7 +37,8 @@ def create_blueprint[
         @blp.doc(security=[{"Bearer Auth": []}])
         @blp.arguments(schema.raw)
         @blp.response(201, schema.one)
-        @blp.alt_response(401, schema=schemas.unauthorized.one)
+        @blp.alt_response(401, schema=schemas.jwt_invalid.one)
+        @blp.alt_response(422, schema=schemas.jwt_invalid.one)
         def post(self, new_data):
             new_data = schema.raw.load(new_data)
             item = schema.model(**new_data)
@@ -49,7 +51,8 @@ def create_blueprint[
         @jwt_required(fresh=True)
         @blp.doc(security=[{"Bearer Auth": []}])
         @blp.response(200, schema.one)
-        @blp.alt_response(401, schema=schemas.unauthorized.one)
+        @blp.alt_response(401, schema=schemas.jwt_invalid.one)
+        @blp.alt_response(422, schema=schemas.jwt_invalid.one)
         @blp.alt_response(404)
         def get(self, id):
             item: schema.model = schema.query.filter_by(id=id).one_or_404()
@@ -59,7 +62,8 @@ def create_blueprint[
         @blp.doc(security=[{"Bearer Auth": []}])
         @blp.arguments(schema.partial)
         @blp.response(200, schema.one)
-        @blp.alt_response(401, schema=schemas.unauthorized.one)
+        @blp.alt_response(401, schema=schemas.jwt_invalid.one)
+        @blp.alt_response(422, schema=schemas.jwt_invalid.one)
         @blp.alt_response(404)
         def patch(self, update_data, id):
             update_data = schema.partial.load(update_data)
@@ -84,7 +88,8 @@ def create_blueprint[
         @jwt_required(fresh=True)
         @blp.doc(security=[{"Bearer Auth": []}])
         @blp.response(204)
-        @blp.alt_response(401, schema=schemas.unauthorized.one)
+        @blp.alt_response(401, schema=schemas.jwt_invalid.one)
+        @blp.alt_response(422, schema=schemas.jwt_invalid.one)
         @blp.alt_response(404)
         def delete(self, id):
             row_count = schema.query.filter_by(id=id).delete()

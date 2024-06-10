@@ -8,6 +8,7 @@ from flask_bcrypt import Bcrypt
 from flask_sqlalchemy import SQLAlchemy
 from flask_jwt_extended import JWTManager, jwt_required
 from flask_smorest import Api, Blueprint
+from flask_simple_captcha import CAPTCHA as Captcha
 
 app = Flask(__name__)
 app.config["API_TITLE"] = "Bibliothecarius"
@@ -35,17 +36,23 @@ app.config["JWT_SECRET_KEY"] = environ["JWT_SECRET_KEY"]
 app.config["API_SPEC_OPTIONS"] = {
     "components": {
         "securitySchemes": {
-            "Bearer Auth": {
-                "type": "http",
-                "scheme": "bearer",
-                "bearerFormat": "JWT"
-            }
+            "Bearer Auth": {"type": "http", "scheme": "bearer", "bearerFormat": "JWT"}
         }
     },
 }
 
 app.config["ADMIN_PASSWORD"] = environ["ADMIN_PASSWORD"]
 
+simple_captcha = Captcha(
+    config={
+        "SECRET_CAPTCHA_KEY": environ["CAPTCHA_SECRET_KEY"],
+        "CAPTCHA_LENGTH": 6,
+        "CAPTCHA_DIGITS": False,
+        "EXPIRE_SECONDS": 120,
+    }
+)
+
+app = simple_captcha.init_app(app)
 
 db = SQLAlchemy(app)
 bcrypt = Bcrypt(app)

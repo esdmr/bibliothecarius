@@ -97,6 +97,6 @@ with app.app_context():
             username="admin",
             password=bcrypt.generate_password_hash(app.config["ADMIN_PASSWORD"]),
             admin=True,
-        ) # type: ignore
+        )  # type: ignore
     )
     db.session.commit()
