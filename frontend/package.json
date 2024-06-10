@@ -1,0 +1,19 @@
+{
+  "name": "bibliothecarius-frontend",
+  "version": "0.1.0",
+  "description": "",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": {
+    "name": "esdmr",
+    "email": "esdmr0@gmail.com"
+  },
+  "license": "MIT",
+  "packageManager": "pnpm@9.2.0",
+  "devDependencies": {
+    "webpack": "npm:ignoredep@^200.9999.0",
+    "xo": "^0.58.0"
+  }
+}

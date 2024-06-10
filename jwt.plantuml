@@ -1,0 +1,23 @@
+@startuml jwt
+
+hide empty description
+
+state Empty {
+    [*] -> EFresh
+    EFresh -> EStale : Time
+    EStale -> EFresh : Challenge
+}
+
+state Authed {
+    [*] -> AFresh
+    AFresh -> AStale : Time
+    AStale -> AFresh : Challenge
+}
+
+[*] -> NoToken
+NoToken -> Empty : Challenge
+NoToken -> Authed : Login
+Empty -> Authed : Login
+Authed -> NoToken : Logout
+
+@enduml

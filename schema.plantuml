@@ -1,0 +1,58 @@
+@startuml schema
+
+entity category {
+    * id: integer <<generated>>
+    --
+    * name: string
+}
+
+entity book {
+    * id: integer <<generated>>
+    --
+    * title: string
+    * description: string
+    category_id <<FK>>
+}
+
+category |o--o{ book
+
+entity author {
+    * id: integer <<generated>>
+    --
+    * name: string
+}
+
+entity book_author {
+    * book_id <<FK>>
+    * author_id <<FK>>
+    --
+}
+
+book ||--o{ book_author
+author ||--o{ book_author
+
+entity publisher {
+    * id: integer <<generated>>
+    --
+    * name: string
+}
+
+entity book_copy {
+    * id: integer <<generated>>
+    --
+    year_published: integer
+    * book_id <<FK>>
+    * publisher_id <<FK>>
+}
+
+book ||--o{ book_copy
+publisher ||--o{ book_copy
+
+entity librarian {
+    * username: string
+    --
+    * password: bcrypt
+    * admin: boolean
+}
+
+@enduml

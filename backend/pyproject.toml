@@ -1,0 +1,29 @@
+[project]
+name = "bibliothecarius-backend"
+version = "0.1.0"
+description = ""
+authors = [
+    {name = "esdmr", email = "esdmr0@gmail.com"},
+]
+dependencies = [
+    "flask>=3.0.3",
+    "flask-smorest>=0.44.0",
+    "sqlalchemy>=2.0.30",
+    "flask-sqlalchemy>=3.1.1",
+    "pymysql>=1.1.1",
+    "flask-bcrypt>=1.0.1",
+    "flask-jwt-extended>=4.6.0",
+]
+requires-python = "==3.12.*"
+readme = "README.md"
+license = {text = "MIT"}
+
+
+[tool.pdm]
+distribution = false
+
+[tool.pdm.dev-dependencies]
+dev = [
+    "black>=24.4.2",
+    "ipython>=8.25.0",
+]
