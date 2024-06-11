@@ -1,14 +1,12 @@
-from typing import Any
-from flask import Flask, make_response
 from flask.views import MethodView
 from flask_jwt_extended import jwt_required
 from marshmallow import Schema
 from flask_smorest import Blueprint, abort
 from flask_sqlalchemy.model import Model
 
-from app import api, db
-import schemas
-from account import require_account
+from .flask import api, db
+from . import schemas
+from .account import require_account
 
 
 def create_blueprint[

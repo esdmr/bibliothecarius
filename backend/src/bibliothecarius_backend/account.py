@@ -1,12 +1,9 @@
-from datetime import timedelta
-from typing import Any
-from flask import make_response
 from flask.views import MethodView
 from flask_smorest import Blueprint, abort
 from flask_jwt_extended import jwt_required, get_current_user, create_access_token
 
-from app import api, bcrypt
-import schemas
+from .flask import api, bcrypt
+from . import schemas
 
 
 blp = Blueprint("account", "account", url_prefix="/account")

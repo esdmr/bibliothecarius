@@ -1,13 +1,9 @@
-from copy import deepcopy
-from functools import wraps
-from random import randbytes
-from typing import Any, override
 from flask import Flask
 from os import environ
 from flask_bcrypt import Bcrypt
 from flask_sqlalchemy import SQLAlchemy
-from flask_jwt_extended import JWTManager, jwt_required
-from flask_smorest import Api, Blueprint
+from flask_jwt_extended import JWTManager
+from flask_smorest import Api
 from flask_simple_captcha import CAPTCHA as Captcha
 
 app = Flask(__name__)

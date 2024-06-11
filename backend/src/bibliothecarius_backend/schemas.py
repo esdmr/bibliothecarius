@@ -1,10 +1,8 @@
-from types import NoneType
-from typing import Generic, Type, TypeVar, cast, Iterable, Any
+from typing import Type, cast, Any
 from marshmallow import Schema, fields
-from sqlalchemy.orm.query import Query
 from flask_sqlalchemy.model import Model
-import models
-import app
+from . import models
+from .flask import jwt as jwt_manager
 
 
 def id_field() -> fields.Integer:
@@ -172,11 +170,11 @@ class ChallengeResponseMessageSchema(Schema):
 challenge_response_message = Instances(ChallengeResponseMessageSchema)
 
 
-@app.jwt.user_identity_loader
+@jwt_manager.user_identity_loader
 def user_identity_lookup(user: Any) -> Any:
     return identity.one.dump(user)
 
 
-@app.jwt.user_lookup_loader
+@jwt_manager.user_lookup_loader
 def user_lookup_loader(_jwt_header: dict[str, Any], jwt_data: dict[str, Any]):
     return identity.one.load(jwt_data["sub"])
