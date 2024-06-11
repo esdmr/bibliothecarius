@@ -27,4 +27,5 @@ distribution = false
 dev = [
     "black>=24.4.2",
     "ipython>=8.25.0",
+    "toml-to-requirements>=0.2.2",
 ]
