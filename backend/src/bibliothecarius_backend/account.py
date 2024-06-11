@@ -12,6 +12,23 @@ import schemas
 blp = Blueprint("account", "account", url_prefix="/account")
 
 
+def require_account(admin_only=False):
+    identity = schemas.identity.one.load(get_current_user() or {})
+
+    if not isinstance(identity, dict):
+        identity = {}
+
+    account = identity.get("account", None)
+
+    if not account:
+        abort(401, Exception("Not logged in"))
+
+    if admin_only and not account.get("admin", False):
+        abort(403, Exception("Not an admin"))
+
+    return account
+
+
 @blp.route("/")
 class Account(MethodView):
     @jwt_required()
@@ -20,17 +37,7 @@ class Account(MethodView):
     @blp.alt_response(422)
     @blp.alt_response(401)
     def get(self):
-        identity = schemas.identity.one.load(get_current_user() or {})
-
-        if not isinstance(identity, dict):
-            identity = {}
-
-        account = identity.get("account", None)
-
-        if not account:
-            abort(401)
-
-        return schemas.librarian.one.dump(account)
+        return schemas.librarian.one.dump(require_account())
 
     @jwt_required(optional=True)
     @blp.doc(security=[{}, {"Bearer Auth": []}])
@@ -64,7 +71,6 @@ class Account(MethodView):
             {
                 "token": create_access_token(
                     schemas.identity.one.dump({**identity, "account": account}),
-                    fresh=timedelta(minutes=5),
                 )
             }
         )
