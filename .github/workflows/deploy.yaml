@@ -22,6 +22,7 @@ jobs:
       - run: pip3 install toml-to-requirements
 
       - run: toml-to-req --toml-file pyproject.toml
+        working-directory: backend
 
       - run: npm i -g @liara/cli@5
 
