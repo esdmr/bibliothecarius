@@ -39,8 +39,6 @@ class Account(MethodView):
     def get(self):
         return schemas.librarian.one.dump(require_account())
 
-    @jwt_required(optional=True)
-    @blp.doc(security=[{}, {"Bearer Auth": []}])
     @blp.arguments(schemas.login.one)
     @blp.response(200, schemas.jwt.one)
     @blp.alt_response(422)
@@ -48,11 +46,6 @@ class Account(MethodView):
     @blp.alt_response(404)
     @blp.alt_response(401)
     def post(self, data):
-        identity = schemas.identity.one.load(get_current_user() or {})
-
-        if not isinstance(identity, dict):
-            identity = {}
-
         data = schemas.login.one.load(data)
 
         if not isinstance(data, dict):
@@ -70,7 +63,7 @@ class Account(MethodView):
         return schemas.jwt.one.dump(
             {
                 "token": create_access_token(
-                    schemas.identity.one.dump({**identity, "account": account}),
+                    schemas.identity.one.dump({"account": account})
                 )
             }
         )

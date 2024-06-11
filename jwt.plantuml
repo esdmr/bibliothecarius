@@ -9,7 +9,7 @@ state Empty {
 }
 
 state Authed {
-    [*] -> AFresh
+    [*] -> AStale
     AFresh -> AStale : Time
     AStale -> AFresh : Challenge
 }
@@ -17,7 +17,5 @@ state Authed {
 [*] -> NoToken
 NoToken -> Empty : Challenge
 NoToken -> Authed : Login
-Empty -> Authed : Login
-Authed -> NoToken : Logout
 
 @enduml
