@@ -1,0 +1,34 @@
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy-backend:
+    runs-on: ubuntu-latest
+    environment: deploy-backend
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: "18"
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Setup PDM
+        uses: pdm-project/setup-pdm@v4
+
+      - run: npm i -g @liara/cli@5
+
+      - run: pdm install
+        working-directory: backend
+
+      - run: liara deploy --app="$APP_NAME" --api-token="$LIARA_TOKEN" --no-app-logs
+        working-directory: backend
+        env:
+          APP_NAME: ${{ vars.LIARA_APP_NAME }}
+          LIARA_TOKEN: ${{ secrets.LIARA_API_TOKEN }}
