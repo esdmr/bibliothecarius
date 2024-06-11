@@ -92,7 +92,7 @@ with app.app_context():
         db.drop_all()
 
     db.create_all()
-    db.session.add(
+    db.session.merge(
         Librarian(
             username="admin",
             password=bcrypt.generate_password_hash(app.config["ADMIN_PASSWORD"]),
