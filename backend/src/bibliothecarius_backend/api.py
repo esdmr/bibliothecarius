@@ -3,6 +3,7 @@ from flask_jwt_extended import jwt_required
 from marshmallow import Schema
 from flask_smorest import Blueprint, abort
 from flask_sqlalchemy.model import Model
+from sqlalchemy.orm import InstrumentedAttribute
 
 from .flask import api, db
 from . import schemas
@@ -11,7 +12,12 @@ from .account import require_account
 
 def create_blueprint[
     S: Schema, M: Model
-](schema: schemas.Instances[S, M], url_prefix: str, is_admin_route: bool = False):
+](
+    schema: schemas.Instances[S, M],
+    url_prefix: str,
+    primary_key: InstrumentedAttribute,
+    is_admin_route: bool = False,
+):
     blp = Blueprint(schema.name, schema.name, url_prefix=url_prefix)
 
     @blp.route("/")
@@ -64,7 +70,7 @@ def create_blueprint[
             if is_admin_route:
                 require_account(admin_only=True)
 
-            item: schema.model = schema.query.filter_by(id=id).one_or_404()
+            item: schema.model = schema.query.filter(primary_key == id).one_or_404()
             return schema.one.dump(item)
 
         @jwt_required(fresh=True)
@@ -82,7 +88,7 @@ def create_blueprint[
             if not isinstance(update_data, dict):
                 update_data = {}
 
-            item: schema.model = schema.query.filter_by(id=id).one_or_404()
+            item: schema.model = schema.query.filter(primary_key == id).one_or_404()
             updated = False
 
             for i in schema.partial.fields.keys():
@@ -105,7 +111,7 @@ def create_blueprint[
         @blp.alt_response(404)
         def delete(self, id):
             require_account(admin_only=is_admin_route)
-            row_count = schema.query.filter_by(id=id).delete()
+            row_count = schema.query.filter(primary_key == id).delete()
             db.session.commit()
             if row_count < 1:
                 abort(404)
@@ -113,12 +119,27 @@ def create_blueprint[
     return blp
 
 
-api.register_blueprint(create_blueprint(schemas.category, "/categories"))
-api.register_blueprint(create_blueprint(schemas.book, "/books"))
-api.register_blueprint(create_blueprint(schemas.author, "/authors"))
-api.register_blueprint(create_blueprint(schemas.book_author, "/book_authors"))
-api.register_blueprint(create_blueprint(schemas.publisher, "/publishers"))
-api.register_blueprint(create_blueprint(schemas.book_copy, "/book_copies"))
 api.register_blueprint(
-    create_blueprint(schemas.librarian, "/librarians", is_admin_route=True)
+    create_blueprint(schemas.category, "/categories", schemas.category.model.id)
+)
+api.register_blueprint(create_blueprint(schemas.book, "/books", schemas.book.model.id))
+api.register_blueprint(
+    create_blueprint(schemas.author, "/authors", schemas.author.model.id)
+)
+api.register_blueprint(
+    create_blueprint(schemas.book_author, "/book_authors", schemas.book_author.model.id)
+)
+api.register_blueprint(
+    create_blueprint(schemas.publisher, "/publishers", schemas.publisher.model.id)
+)
+api.register_blueprint(
+    create_blueprint(schemas.book_copy, "/book_copies", schemas.book_copy.model.id)
+)
+api.register_blueprint(
+    create_blueprint(
+        schemas.librarian,
+        "/librarians",
+        schemas.librarian.model.username,
+        is_admin_route=True,
+    )
 )
