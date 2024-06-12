@@ -2,7 +2,7 @@ from typing import Optional
 from sqlalchemy import ForeignKey, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from .flask import app, db, bcrypt
+from .base import app, db, bcrypt
 
 VARCHAR_LENGTH = 255
 BCRYPT_LENGTH = 60

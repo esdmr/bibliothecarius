@@ -5,7 +5,7 @@ from flask_smorest import Blueprint, abort
 from flask_sqlalchemy.model import Model
 from sqlalchemy.orm import InstrumentedAttribute
 
-from .flask import api, db
+from .base import api, db
 from . import schemas
 from .account import require_account
 

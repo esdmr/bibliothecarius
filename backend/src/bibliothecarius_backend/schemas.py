@@ -2,7 +2,7 @@ from typing import Type, cast, Any
 from marshmallow import Schema, fields
 from flask_sqlalchemy.model import Model
 from . import models
-from .flask import jwt as jwt_manager
+from .base import jwt as jwt_manager
 
 
 def id_field() -> fields.Integer:

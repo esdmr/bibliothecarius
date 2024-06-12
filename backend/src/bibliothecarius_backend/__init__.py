@@ -1,5 +1,5 @@
 from flask import redirect
-from .flask import app
+from .base import app
 from . import models
 from . import schemas
 from . import account

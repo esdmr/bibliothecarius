@@ -4,7 +4,7 @@ from flask.views import MethodView
 from flask_smorest import Blueprint, abort
 from flask_jwt_extended import jwt_required, get_current_user, create_access_token
 
-from .flask import api, simple_captcha
+from .base import api, simple_captcha
 from . import schemas
 
 blp = Blueprint("challenge", "challenge", url_prefix="/challenge")
