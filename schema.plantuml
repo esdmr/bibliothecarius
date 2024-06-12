@@ -23,9 +23,10 @@ entity author {
 }
 
 entity book_author {
+    * id: integer <<generated>>
+    --
     * book_id <<FK>>
     * author_id <<FK>>
-    --
 }
 
 book ||--o{ book_author
