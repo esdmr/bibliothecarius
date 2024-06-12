@@ -88,9 +88,6 @@ class Librarian(db.Model):
 
 
 with app.app_context():
-    if app.debug:
-        db.drop_all()
-
     db.create_all()
     db.session.merge(
         Librarian(
