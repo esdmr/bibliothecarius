@@ -1,0 +1,36 @@
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/deploy-backend.yaml'
+      - 'backend/**'
+
+jobs:
+  deploy-backend:
+    runs-on: ubuntu-latest
+    environment: deploy-backend
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: "18"
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - run: pip3 install toml-to-requirements
+
+      - run: toml-to-req --toml-file pyproject.toml
+        working-directory: backend
+
+      - run: npm i -g @liara/cli@5
+
+      - run: liara deploy --app="$APP_NAME" --api-token="$LIARA_TOKEN" --no-app-logs
+        working-directory: backend
+        env:
+          APP_NAME: ${{ vars.LIARA_APP_NAME }}
+          LIARA_TOKEN: ${{ secrets.LIARA_API_TOKEN }}
