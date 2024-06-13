@@ -3,9 +3,9 @@ import 'vite/client';
 import 'vitest/importMeta';
 
 declare global {
-	// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
-	interface ImportMetaEnv {
-		RTE_TREE_URL: string;
-		RTE_BLOB_URL: string;
-	}
+    // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
+    interface ImportMetaEnv {
+        RTE_TREE_URL: string;
+        RTE_BLOB_URL: string;
+    }
 }
