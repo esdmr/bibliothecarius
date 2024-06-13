@@ -58,6 +58,7 @@ export function setToken(token: string) {
         () => {
             if (decoded.value?.exp && decoded.value.exp <= now()) {
                 currentToken.value = '';
+                localStorage.setItem('token', '');
             } else if (decoded.value?.fresh && decoded.value.fresh <= now()) {
                 const oldValue = currentToken.value;
                 currentToken.value = '';
@@ -67,7 +68,9 @@ export function setToken(token: string) {
                 });
             }
         },
-        (decoded.value?.fresh ?? decoded.value?.exp ?? 0) - now() - 1,
+        (decoded.value?.fresh ?? decoded.value?.exp ?? 0) * 1000 -
+            Date.now() +
+            1,
     );
 
     if (import.meta.env.DEV) {
