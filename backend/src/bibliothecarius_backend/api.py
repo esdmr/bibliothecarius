@@ -5,7 +5,7 @@ from flask_smorest import Blueprint, abort
 from flask_sqlalchemy.model import Model
 from sqlalchemy.orm import InstrumentedAttribute
 
-from .base import api, db
+from .base import api, db, bcrypt
 from . import schemas
 from .account import require_account
 
@@ -16,9 +16,9 @@ def create_blueprint[
     schema: schemas.Instances[S, M],
     url_prefix: str,
     primary_key: InstrumentedAttribute,
-    is_admin_route: bool = False,
 ):
     blp = Blueprint(schema.name, schema.name, url_prefix=url_prefix)
+    is_librarian_route = schema == schemas.librarian
 
     @blp.route("/")
     class Index(MethodView):
@@ -30,7 +30,7 @@ def create_blueprint[
         @blp.alt_response(403)
         @blp.alt_response(422)
         def get(self, query):
-            if is_admin_route:
+            if is_librarian_route:
                 require_account(admin_only=True)
 
             query = schema.partial.load(query)
@@ -46,12 +46,22 @@ def create_blueprint[
         @blp.doc(security=[{"Bearer Auth": []}])
         @blp.arguments(schema.raw)
         @blp.response(201, schema.one)
+        @blp.alt_response(400)
         @blp.alt_response(401)
         @blp.alt_response(403)
         @blp.alt_response(422)
         def post(self, new_data):
-            require_account(admin_only=is_admin_route)
+            require_account(admin_only=is_librarian_route)
             new_data = schema.raw.load(new_data)
+
+            if is_librarian_route:
+                if not isinstance(new_data, dict):
+                    abort(400)
+
+                new_data["password"] = bcrypt.generate_password_hash(
+                    new_data["password"]
+                )
+
             item = schema.model(**new_data)
             db.session.add(item)
             db.session.commit()
@@ -67,7 +77,7 @@ def create_blueprint[
         @blp.alt_response(422)
         @blp.alt_response(404)
         def get(self, id):
-            if is_admin_route:
+            if is_librarian_route:
                 require_account(admin_only=True)
 
             item: schema.model = schema.query.filter(primary_key == id).one_or_404()
@@ -82,7 +92,7 @@ def create_blueprint[
         @blp.alt_response(422)
         @blp.alt_response(404)
         def patch(self, update_data, id):
-            require_account(admin_only=is_admin_route)
+            require_account(admin_only=is_librarian_route)
             update_data = schema.partial.load(update_data)
 
             if not isinstance(update_data, dict):
@@ -93,8 +103,13 @@ def create_blueprint[
 
             for i in schema.partial.fields.keys():
                 if i in update_data:
-                    if getattr(item, i) != update_data[i]:
-                        setattr(item, i, update_data[i])
+                    if is_librarian_route and i == "password":
+                        value = bcrypt.generate_password_hash(update_data[i])
+                    else:
+                        value = update_data[i]
+
+                    if getattr(item, i) != value:
+                        setattr(item, i, value)
                         updated = True
 
             if updated:
@@ -110,7 +125,7 @@ def create_blueprint[
         @blp.alt_response(422)
         @blp.alt_response(404)
         def delete(self, id):
-            require_account(admin_only=is_admin_route)
+            require_account(admin_only=is_librarian_route)
             row_count = schema.query.filter(primary_key == id).delete()
             db.session.commit()
             if row_count < 1:
@@ -140,6 +155,5 @@ api.register_blueprint(
         schemas.librarian,
         "/librarians",
         schemas.librarian.model.username,
-        is_admin_route=True,
     )
 )

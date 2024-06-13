@@ -127,13 +127,14 @@ identity = Instances(Identity)
 class LogInSchema(Schema):
     username = fields.String(required=True)
     password = fields.String(required=True, load_only=True)
+    admin = fields.Boolean(required=False)
 
 
 login = Instances(LogInSchema, models.Librarian)
 
 
 class Jwt(Schema):
-    token = fields.String(required=True)
+    token = fields.String(required=False)
 
 
 jwt = Instances(Jwt)
