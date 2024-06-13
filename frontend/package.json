@@ -2,6 +2,7 @@
   "name": "bibliothecarius-frontend",
   "version": "0.1.0",
   "description": "",
+  "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -13,7 +14,19 @@
   "license": "MIT",
   "packageManager": "pnpm@9.2.0",
   "devDependencies": {
+    "@types/node": "20",
+    "typescript": "^5.4.5",
     "webpack": "npm:ignoredep@^200.9999.0",
     "xo": "^0.58.0"
+  },
+  "dependencies": {
+    "@preact/signals": "^1.2.3",
+    "bootstrap": "^5.3.3",
+    "jwt-decode": "^4.0.0",
+    "preact": "10.22.0",
+    "react": "npm:@preact/compat@^17.1.2",
+    "react-bootstrap": "^2.10.2",
+    "react-dom": "npm:@preact/compat@^17.1.2",
+    "vite": "^5.2.13"
   }
 }

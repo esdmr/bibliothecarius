@@ -1,0 +1,17 @@
+.card {
+    display: inline-block;
+    padding: 0;
+    margin: 1em;
+    box-sizing: border-box;
+    width: 90%;
+}
+
+.btn {
+    margin: 0.1em;
+}
+
+.row,
+.col {
+    --bs-gutter-x: 0;
+    --bs-gutter-y: 0;
+}
