@@ -58,7 +58,6 @@ api = Api(app)
 Cors(
     app,
     origins=["http://localhost:5173", "https://esdmr.ir"],
-    methods=["GET", "HEAD", "POST", "PATCH", "DELETE"],
     supports_credentials=True,
     vary_header=False,
 )
