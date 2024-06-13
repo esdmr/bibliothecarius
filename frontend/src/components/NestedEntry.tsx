@@ -6,12 +6,10 @@ import {EntryList} from './EntryList.js';
 export const NestedEntry = ({
     input,
     route,
-    nullable = false,
     disabled,
 }: {
     input: Signal;
     route: Route;
-    nullable?: boolean;
     disabled?: boolean | Signal<boolean>;
 }) => {
     return (
@@ -21,7 +19,7 @@ export const NestedEntry = ({
                     <ReadonlyEntry
                         data={input.value}
                         route={route}
-                        nullable={nullable}
+                        nullable
                         onRemove={() => {
                             input.value = undefined;
                         }}

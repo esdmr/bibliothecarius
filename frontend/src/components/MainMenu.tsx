@@ -1,10 +1,22 @@
-import {signal, useComputed, useSignal, type Signal} from '@preact/signals';
+import {
+    signal,
+    useComputed,
+    useSignal,
+    type Signal,
+    computed,
+} from '@preact/signals';
 import {createContext, type VNode} from 'preact';
 import {useContext} from 'preact/hooks';
 import Button from 'react-bootstrap/esm/Button.js';
 import Col from 'react-bootstrap/esm/Col.js';
 import {routes} from '../backend.js';
-import {accountSelected, isAdmin, setToken, username} from '../token.js';
+import {
+    accountSelected,
+    isAdmin,
+    isLoggedIn,
+    setToken,
+    username,
+} from '../token.js';
 import {EntryList} from './EntryList.js';
 
 type Pages = Signal<
@@ -66,6 +78,9 @@ export const MainMenu = () => {
                                             input={signal(undefined)}
                                             route={i}
                                             mode="view"
+                                            disabled={computed(
+                                                () => !isLoggedIn.value,
+                                            )}
                                         />,
                                     );
                                 }}

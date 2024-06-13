@@ -41,64 +41,60 @@ export const EntryFields = ({
 }) => {
     return (
         <>
-            {Object.entries(route.schema).map(
-                ([key, {type, nullable, secret}]) => {
-                    const id = `${formId}__${key}`;
+            {Object.entries(route.schema).map(([key, {type, secret}]) => {
+                const id = `${formId}__${key}`;
 
-                    const Input =
-                        type === Boolean ? FormCheckInput : FormControl;
+                const Input = type === Boolean ? FormCheckInput : FormControl;
 
-                    return typeof type === 'object' ? (
-                        <Col key={key}>
-                            <NestedEntry
-                                input={inputs.current[key]!}
-                                route={type}
-                                nullable={nullable ?? false}
-                                disabled={disabled ?? false}
-                            />
-                        </Col>
-                    ) : (
-                        <Col key={key}>
-                            <FormLabel for={id}>{key}</FormLabel>
-                            <Input
-                                id={id}
-                                type={
-                                    (type === Number
-                                        ? 'number'
+                return typeof type === 'object' ? (
+                    <Col key={key}>
+                        <NestedEntry
+                            input={inputs.current[key]!}
+                            route={type}
+                            disabled={disabled ?? false}
+                        />
+                    </Col>
+                ) : (
+                    <Col key={key}>
+                        <FormLabel for={id}>{key}</FormLabel>
+                        <Input
+                            id={id}
+                            type={
+                                (type === Number
+                                    ? 'number'
+                                    : type === Boolean
+                                      ? 'checkbox'
+                                      : secret
+                                        ? 'password'
+                                        : 'text') as never
+                            }
+                            disabled={disabled as never}
+                            value={inputs.current[key] as never}
+                            checked={inputs.current[key] as never}
+                            onInput={(event: InputEvent) => {
+                                const element =
+                                    event.currentTarget as HTMLInputElement;
+                                inputs.current[key]!.value =
+                                    type === Number
+                                        ? element.valueAsNumber
                                         : type === Boolean
-                                          ? 'checkbox'
-                                          : secret
-                                            ? 'password'
-                                            : 'text') as never
-                                }
-                                disabled={disabled as never}
-                                value={inputs.current[key] as never}
-                                checked={inputs.current[key] as never}
-                                onInput={(event: InputEvent) => {
-                                    const element =
-                                        event.currentTarget as HTMLInputElement;
-                                    inputs.current[key]!.value =
-                                        type === Number
-                                            ? element.valueAsNumber
-                                            : type === Boolean
-                                              ? element.checked
-                                              : element.value;
-                                }}
-                                onChange={(event: ChangeEvent) => {
-                                    const element =
-                                        event.currentTarget as HTMLInputElement;
-                                    inputs.current[key]!.value =
-                                        type === Number
-                                            ? element.valueAsNumber
-                                            : type === Boolean
-                                              ? element.checked
-                                              : element.value;
-                                }}
-                            />
-                        </Col>
-                    );
-                },
-            )}
+                                          ? element.checked
+                                          : element.value;
+                            }}
+                            onChange={(event: ChangeEvent) => {
+                                const element =
+                                    event.currentTarget as HTMLInputElement;
+                                inputs.current[key]!.value =
+                                    type === Number
+                                        ? element.valueAsNumber
+                                        : type === Boolean
+                                          ? element.checked
+                                          : element.value;
+                            }}
+                        />
+                    </Col>
+                );
+            })}
         </>
     );
 };

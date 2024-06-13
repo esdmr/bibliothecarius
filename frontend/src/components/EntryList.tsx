@@ -124,6 +124,7 @@ export const EntryList = ({
                                 data={data}
                                 route={route}
                                 key={data[route.key]}
+                                disabled={disabled as never}
                                 nullable
                                 onRemove={async () => {
                                     await remove(data, route);
