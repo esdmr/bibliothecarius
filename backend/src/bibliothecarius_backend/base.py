@@ -5,6 +5,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_jwt_extended import JWTManager
 from flask_smorest import Api
 from flask_simple_captcha import CAPTCHA as Captcha
+from flask_cors import CORS as Cors
 
 app = Flask(__name__)
 app.config["API_TITLE"] = "Bibliothecarius"
@@ -54,3 +55,10 @@ db = SQLAlchemy(app)
 bcrypt = Bcrypt(app)
 jwt = JWTManager(app)
 api = Api(app)
+Cors(
+    app,
+    origins=["http://localhost:5173", "https://esdmr.ir"],
+    methods=["GET", "HEAD", "POST", "PATCH", "DELETE"],
+    supports_credentials=True,
+    vary_header=False,
+)

@@ -5,7 +5,7 @@
 groups = ["default", "dev"]
 strategy = ["cross_platform", "inherit_metadata"]
 lock_version = "4.4.1"
-content_hash = "sha256:669ffc2c51d5fa3176046c3e02de37b469ef784a66c765f1a42f03d1436df86e"
+content_hash = "sha256:6f1cd98ceaf8d3ee56d8e7fce571919c5266beda1d125114b7d00edd094965e9"
 
 [[package]]
 name = "apispec"
@@ -197,6 +197,19 @@ dependencies = [
 files = [
     {file = "Flask-Bcrypt-1.0.1.tar.gz", hash = "sha256:f07b66b811417ea64eb188ae6455b0b708a793d966e1a80ceec4a23bc42a4369"},
     {file = "Flask_Bcrypt-1.0.1-py3-none-any.whl", hash = "sha256:062fd991dc9118d05ac0583675507b9fe4670e44416c97e0e6819d03d01f808a"},
+]
+
+[[package]]
+name = "flask-cors"
+version = "4.0.1"
+summary = "A Flask extension adding a decorator for CORS support"
+groups = ["default"]
+dependencies = [
+    "Flask>=0.9",
+]
+files = [
+    {file = "Flask_Cors-4.0.1-py2.py3-none-any.whl", hash = "sha256:f2a704e4458665580c074b714c4627dd5a306b333deb9074d0b1794dfa2fb677"},
+    {file = "flask_cors-4.0.1.tar.gz", hash = "sha256:eeb69b342142fdbf4766ad99357a7f3876a2ceb77689dc10ff912aac06c389e4"},
 ]
 
 [[package]]

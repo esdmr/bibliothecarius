@@ -14,6 +14,7 @@ dependencies = [
     "flask-bcrypt>=1.0.1",
     "flask-jwt-extended>=4.6.0",
     "flask-simple-captcha>=5.5.5",
+    "flask-cors>=4.0.1",
 ]
 requires-python = "==3.12.*"
 readme = "README.md"
