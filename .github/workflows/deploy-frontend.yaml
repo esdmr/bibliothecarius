@@ -6,6 +6,11 @@ on:
       - '.github/workflows/deploy-frontend.yaml'
       - 'frontend/**'
 
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
 jobs:
   deploy-frontend:
     runs-on: ubuntu-latest
